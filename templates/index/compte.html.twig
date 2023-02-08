@@ -1,0 +1,72 @@
+{% extends 'base.html.twig' %}
+
+{% block style %}
+    <style>
+
+        .series{
+            display: flex;
+        flex-direction: column;
+		align-items: center;
+  		justify-content: center;
+        }
+
+        .serie{
+            margin: 10px;
+            width: 80%;
+            max-width: 800px;
+            border: solid rgba(255,255,255,0.2) 1px;
+            border-radius: 5px;
+            padding: 20px;
+
+             display: flex;
+            flex-direction: row;
+		    align-items: center;
+  		    justify-content: center;
+        }
+
+        .serie > * {
+            text-align: center;
+        }
+
+        .poster{
+            height: auto;
+            max-height: 200px;
+        }
+
+        .arreter{
+            color: red;
+        }
+
+        .arreter:hover{
+            color: darkred;
+        }
+
+
+
+    </style>
+{% endblock %}
+
+{% block title %}Mon compte{% endblock %}
+
+{% block body %}
+<h1> Votre compte </h1>
+<p> Connecté en tant que: <b>{{user.email}} </b></p>
+
+    <h2> Vos series suivies: </h2>
+
+    <div class="row series">
+    {% for serie in series %}
+    <div class="row serie">
+        <div class="col-4 colPoster">
+            <img class="poster" src="{{path("poster_series_show",{"id":serie.id})}}">
+        </div>
+        <div class="col-4">
+           <a href="{{path("series_show",{"id":serie.id})}}"> <h3> {{serie.title}} </h3> </a>
+        </div>
+        <div class="col-4 ">
+            <a class="arreter" href="{{path('arreter_suivre_serie',{'id':serie.id})}}"  > Arrêter de suivre </a>
+        </div>
+    </div>
+    {% endfor %}
+    </div>
+{% endblock %}

@@ -1,0 +1,288 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Series{% endblock %}
+
+{% block style %}
+
+<style>
+
+    .main{
+        display: flex;
+        justify-content: center;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .show{
+        width: auto;
+        max-width: 1200px;
+
+    }
+
+    h1{
+        margin:30px;
+        text-align: center;
+    }
+
+    .serie{
+        display: flex;
+		align-items: center;
+  		justify-content: center;
+    }
+
+    table{
+        width: auto;
+        max-width: 80%;
+    }
+
+    #poster{
+        width: auto;
+        max-width: 500px;
+        border-radius: 5px;
+        border: solid;
+        border-color: black;
+        margin-bottom: 50px;
+    }
+
+    #colPoster{
+        display: flex;
+		align-items: center;
+  		justify-content: center;
+       
+    }
+
+    #colPlot{
+        padding:50px;
+        display: flex;
+        flex-direction: column;
+		align-items: center;
+  		justify-content: center;
+
+        text-align: justify;
+    }
+
+    #plot{
+        width: auto;
+        max-width: 500px;
+    }
+
+    #colInfos{
+        margin-top: 10px;
+        display: flex;
+        flex-direction: column;
+		align-items: center;
+  		justify-content: center;
+    }
+
+    #colInfos > * {
+        margin: 20px;
+    }
+
+    .saisons{
+        display:flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: top;
+    }
+
+    .saison{
+        text-align: center;
+        padding: 5px;
+        margin: 10px;
+        border: solid black;
+        border-radius: 10px;
+        width: 200px;
+        background-color: rgba(255,255,255,0.1);
+        transition: background-color 0.3s linear;
+        font-size: 20px;
+        font-weight: bold;
+        color: rgba(255,255,255,0.75);
+    }
+
+    .saison:hover{
+        background-color: rgba(255,255,255,0.3);
+    }
+
+    a{
+        text-decoration: none;
+    }
+
+    .addComRow{
+        margin-top: 20px;
+        border-top: solid rgba(255,255,255,0.3) 1px ;
+        display: flex;
+        flex-direction: column;
+		align-items: center;
+  		justify-content: center;
+    }
+
+    form{
+       text-align: center;
+    }
+
+    form > * {
+        margin: 5px;
+    }
+
+    #com{
+        width: 80%;
+        height: 10vw;
+        min-height: 200px;
+        min-width: 200px;
+        max-height: 1000px;
+        max-width: 1000px;
+        border-radius: 10px;
+    }
+
+    .comRow{
+        margin-top: 20px;
+        border-top: solid rgba(255,255,255,0.3) 1px ;
+        display: flex;
+        flex-direction: column;
+		align-items: center;
+  		justify-content: center;
+
+    }
+
+    .com{
+        border: solid rgba(255,255,255,0.2) 1px;
+        padding: 20px;
+        margin: 20px;
+        width: 80%;
+        border-radius: 5px;
+
+    }
+
+    .italic{
+        font-style: italic;
+    }
+
+    #suivre{
+        margin: 20px;
+    }
+
+    .supprComment{
+        color: red;
+    }
+
+    .supprComment:hover{
+        color: darkred;
+    }
+
+    
+
+
+</style>
+
+
+
+
+{% endblock %}
+
+{% block body %}
+    <h1>{{ series.title }}</h1>
+
+
+    {% if is_granted('ROLE_USER') %}
+    <form id="suivreForm" method="GET" action="{{path("suivre_serie",{"id":series.id})}}">
+        <button id="suivre" type="submit">
+        {% if suivi %}
+            Suivie ✅
+        {% else %}
+         Suivre ✔️
+         {% endif %}
+        
+        </button>
+    </form>
+    {% else %}
+    <p> Connectez vous pour suivre une serie </p>
+    {% endif %}
+
+    <div class="row show">
+        <div class="col-lg-6" id="colPoster">
+            <img id="poster" src="{{path("poster_series_show",{"id":series.id})}}">
+        </div>
+        <div class="col-lg-6" id="colPlot">
+            <p id="plot"> {{ series.plot }} </p>
+            
+        </div>
+        <div class="col-lg-6 saisons">
+        {% set i = 0 %}
+        {% for saison in saisons %}
+            {% set i = i + 1 %}
+            <a href="{{path("season_show",{"id":saison.id})}}">
+            <div class="saison">
+                Saison {{i}}
+                {% if is_granted('ROLE_USER') %}
+                 <p>{{app.user.nbEpisodeVuSaison(saison)}} épisodes vus</p>
+                {% endif %}
+            </div>
+            </a>
+        {% endfor %}
+        </div>
+        <div class="col-lg-6" id="colInfos">
+            {% set yt = series.youtubeTrailer | split("https://www.youtube.com/watch?v=") %}
+            <a href="https://www.imdb.com/title/{{ series.imdb}}"> Fiche IMDB </a>
+            <iframe class="youtube" width="560" height="315" src="https://www.youtube.com/embed/{{yt[1]}}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            <p> <b>Awards:</b> {{series.awards}} </p> 
+            <div id="date">
+                <p> <b>Année de debut: </b> {{series.yearStart}}</p>
+                {% if series.yearEnd is not empty  %}
+                    <p> <b>Année de fin: </b> {{series.yearEnd}}</p>
+                {% endif %}
+            </div>    
+        </div>
+        <div class="row addComRow">
+            <div class="col-12 addCom">
+            {% if is_granted('ROLE_USER') %}
+                <h1> Ajouter un commentaire </h1>
+                <form method="POST" action="{{path('comment_series',{'id':series.id})}}">
+                    <input type="hidden"  name="serie_id" value="{{series.id}}"/>
+                    <input  type="hidden" name="user_id" value="{{app.user}}"/>
+                    <label for="note"> Note</label>
+                    
+                    <select name="note" id="note" required>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                    </select>⭐
+                    <br/>
+                    <label for="com"> Commentaire (optionnel): </label> <br/>
+                    <textarea name="commentaire" id="com"> </textarea>
+                     <br/> 
+
+                    <button type="submit"> Envoyer 🚀</button>
+                </form>
+                {% else %}
+                <h1> Veuillez vous connecter pour laisser un commentaire. </h1>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="row comRow">
+        {% for com in commentaires %}
+            <div class="col-12 com">
+               <span class="italic">
+                De: {{com.user.name}}
+                Le: {{com.date|date('Y-m-d H:i')}}
+                </span>
+                <br/><br/>
+                <b>{{com.value}}</b>⭐
+                <p>{{com.comment}}</p>
+                {% if is_granted('ROLE_USER') and app.user.getAdmin()%}
+                <a class="supprComment" href="{{path('rating_delete',{'id':com.id,'id_serie':series.id})}}"> Supprimer </a>
+                {% endif %}
+            </div>  
+            
+        {% endfor %}
+        </div>
+        
+
+
+    </div>
+        
+    
+  
+{% endblock %}

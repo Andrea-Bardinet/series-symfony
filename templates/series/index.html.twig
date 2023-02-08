@@ -1,0 +1,227 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Series index
+{% endblock %}
+
+{% block style %}
+<style>	
+
+	.main{
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
+
+	}
+
+	.series{
+		width: auto;
+		max-width: 1300px;
+		padding: none;
+		justify-content: center;
+	}
+
+	.col-md{
+		min-width: 300px;
+		width: 300px;
+		max-width: 300px;
+		margin: none;
+	}
+
+
+
+	h1{
+		margin: 20px;
+	}
+
+	.colCard{
+		display: flex;
+		align-items: center;
+  		justify-content: center;
+		margin: 10px;
+		box-sizing: border-box;
+	}
+
+	.divImg{
+		overflow: hidden;
+	}
+
+	.lienSerie{
+		height: 0px;
+		color: white;
+		text-decoration: none;
+	}
+
+	.lienSerie:hover{
+		color: white;
+	}
+
+	.fiche{
+		visibility: hidden;
+		height: 0px;
+		position: relative;
+		top: 160px;;
+		z-index: 2;
+		opacity: 0;
+		transition: opacity 0.3s linear;
+	}
+
+	.pFiche{
+		margin: 20px;
+		text-align: center;
+		font-size: 35px;
+		font-weight: bold;
+		text-shadow: 5px 5px 5px black;
+		box-shadow: 5px 5px 10px black;
+		border:  solid;
+		border-radius: 100px;
+	
+	}
+
+
+	.poster{
+		--time-trans: 0.3s;
+		-webkit-transition: var(--time-trans) -webkit-filter linear;
+		-o-transition: var(--time-trans) -o-filter linear;
+		-moz-transition: var(--time-trans) -moz-filter linear;
+		-ms-transition: var(--time-trans) -ms-filter linear;
+		transition: filter var(--time-trans) ;
+		height: auto;
+		max-height: 400px;
+		min-height:400px;
+	}
+
+	.card:hover > .divImg > .poster{
+		--blur: 10px;
+		-webkit-filter: blur(var(--blur));
+		-moz-filter: blur(var(--blur));
+		-o-filter: blur(var(--blur));
+		-ms-filter: blur(var(--blur));
+		filter: blur(var(--blur));
+	}
+
+	.card:hover > .lienSerie > .fiche{
+		opacity: 1;
+		visibility: visible;
+	}
+
+
+	.card-title{
+		text-align: center;
+	}
+	
+
+	#recherche{
+		margin: 20px;
+	}
+
+	#recherche > * {
+		margin: 5px;
+	} 
+
+	.pagination{
+		width: 100%;
+		max-width: 1300px;
+		display: flex;
+		justify-content: space-around;
+		align-content: center;
+		align-items: center;
+	}
+
+	.pagination > * {
+		display: flex;
+		justify-content: space-around;
+		align-content: center;
+		align-items: center;
+	}
+
+	.pagination > * > p{
+		margin-top: 15px;
+		font-size: 20px;
+		font-weight: bold;
+	}
+
+	.pagination > * > button{
+		border-radius: 5px;
+	}
+
+	
+
+
+</style>
+{% endblock %}
+
+{% block body %}
+
+	<form method="get" id="recherche">
+		<input type="text" id="nomRecherche" name="debut" value="{{debut}}" placeholder="Nom de votre série">
+		{% if is_granted('ROLE_USER') %}
+		<label for="triCheck"> Trier par note </label>
+		<input type="checkbox" name="tri" id='triCheck' value="tri">
+		{% endif %}
+		<button type="submit"> Rechercher </button> 
+	</form>
+
+	<form methode="get" class="pagination">
+		<input type="hidden" name="debut" value="{{debut}}">
+		<div class="col">
+			{% if pagePrec %}
+			<button type="submit" name="page" value="{{page - 1 }}"> Page Précédente </button>
+			{% endif %}
+		</div>
+		<div class="col">
+			<p> Page {{page + 1}} </p>
+		</div>
+		<div class="col">
+			{% if pageSuiv %}
+			<button type="submit" name="page" value="{{page + 1 }}"> Page Suivante </button>
+			{% endif %}
+		</div>
+	</form>
+
+	
+
+	<div class="row series">
+		{% for series in series %}
+			<div class="col-md colCard">
+				<div class="card bg-dark text-white" style="width: 18rem;">
+					<a class="lienSerie"href="{{series.id}}" >	
+						<div class="fiche">
+							<p class="pFiche"> Voir la fiche </p>
+						</div>
+					</a>
+					<div class="divImg">
+						<img class="card-img-top poster" src="{{path("poster_series_show",{"id":series.id})}}" alt="Card image cap">
+					</div>
+					<div class="card-body">
+						<h5 class="card-title">{{ series.title }}</h5>
+					</div>
+				</div>
+
+			</div>
+		{% else %}
+			<h2>
+				Aucun résultat 😢
+			</h2>
+		{% endfor %}
+	</div>
+
+	<form methode="get" class="pagination">
+		<input type="hidden" name="debut" value="{{debut}}">
+		<div class="col">
+			{% if pagePrec %}
+			<button type="submit" name="page" value="{{page - 1 }}"> Page Précédente </button>
+			{% endif %}
+		</div>
+		<div class="col">
+			<p> Page {{page + 1}} </p>
+		</div>
+		<div class="col">
+			{% if pageSuiv %}
+			<button type="submit" name="page" value="{{page + 1 }}"> Page Suivante </button>
+			{% endif %}
+		</div>
+	</form>
+
+
+{% endblock %}

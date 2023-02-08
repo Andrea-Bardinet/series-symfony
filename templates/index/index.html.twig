@@ -1,0 +1,57 @@
+{% extends 'base.html.twig' %}
+
+{% block style %}
+<style>
+
+#divApropos{
+    padding: 20px;
+}
+
+#divApropos > * {
+    margin: 20px;
+}
+
+#apropos{
+    margin-right: 20px;
+    
+}
+
+
+
+
+
+
+
+</style>
+
+{% endblock %}
+
+{% block title %}Accueil{% endblock %}
+
+{% block body %}
+<div class="container-fluid">
+    <h1> Accueil </h1>
+    <div class="row">
+        <div class="col-12" id="divApropos">
+            <h2> Notre projet: </h2>
+            <p id="apropos">
+            Bienvenue sur notre site. Ce site représente l'ensemble de notre projet de fin de module S3Web.
+            <br/>Site réalisé par Emma Lemos et Andréa Bardinet.
+            <br/> <br/>
+            Vous pouvez accéder aux séries depuis le menu en allant sur "Séries". Depuis cette page
+            vous avez accès à la recherche de séries.
+            <br/><br/>
+            Vous pouvez vous inscrire et vous connecter depuis le sous menu "Utilisateurs".
+            <br/> Dans ce sous menu, "Mon compte" vous donne accès aux séries que vous suivez.
+           <br/> Si vous êtes connecté depuis un compte admin, un onglet "Admin" apparaitra dans le menu.
+            <br/><br/>
+            Bonne visite !
+            </p>
+        <div>
+
+       
+    </div>
+
+
+</div>
+{% endblock %}   

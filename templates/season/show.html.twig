@@ -1,0 +1,53 @@
+{% extends 'base.html.twig' %}
+
+{% block style %}
+    <style>
+
+        .episode{
+            padding: 10px;
+            margin: 10px;
+            border: solid rgba(255,255,255,0.2) 1px;
+            border-radius: 10px;
+        }
+
+        .episode:hover{
+            border-color: rgba(255,255,255,0.4)
+        }
+
+
+    </style>
+
+{% endblock %}
+
+{% block title %}Saison{% endblock %}
+
+{% block body %}
+
+        {% set i = 0 %}
+        {% for episode in episodes %}
+        <div class="col-12 episode">
+        {% set i = i + 1 %}
+            <h2>{{i}} - {{episode.title}}</h2>
+            <p><b> Date:</b> {{ episode.date|date('Y-m-d') }}</p>
+            <a href="https://www.imdb.com/title/{{ episode.imdb}}"> Fiche IMDB </a>
+            <p> ⭐ {{episode.imdbrating}}/10</p>
+
+            {% if is_granted('ROLE_USER')%}
+                {% if episode in app.user.getEpisode() %}    
+                 <p> Vu ✅ </p>    
+                {% else %}
+                <a href="{{path('episode_suivre',{'id':episode.id})}}"> Marquer comme vu </a>
+                {% endif %}
+            {% else %}
+                <p> Veuillez vous connecter pour enregistrer vos episodes. </p>
+            {% endif %}
+        </div>
+
+        {% endfor %}
+
+
+    
+
+    
+
+{% endblock %}
